@@ -1,0 +1,30 @@
+<!-- templates/dashboard.html -->
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome {{ user.username }}!</h1>
+    <div class="counter-display">
+        <span id="clicks">{{ user.clicks }}</span>
+    </div>
+    <div class="rank-display">
+        Current Rank: #<span id="rank">{{ user.get_rank() }}</span>
+    </div>
+    <button class="button" onclick="increment()">CLICK TO WIN</button>
+    
+    <div class="nav-links">
+        <a href="{{ url_for('ranking') }}">Leaderboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        async function increment() {
+            const response = await fetch('/increment', { method: 'POST' });
+            const data = await response.json();
+            document.getElementById('clicks').textContent = data.clicks;
+            document.getElementById('rank').textContent = data.rank;
+        }
+    </script>
+{% endblock %}

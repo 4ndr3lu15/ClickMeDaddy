@@ -1,0 +1,45 @@
+<!-- templates/ranking.html -->
+{% extends "base.html" %}
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+    <h1>Leaderboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Clicks</th>
+            </tr>
+        </thead>
+        <tbody id="ranking-body">
+        </tbody>
+    </table>
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function updateRankings() {
+            fetch('/get_rankings')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('ranking-body');
+                    tbody.innerHTML = '';
+                    data.forEach((user, index) => {
+                        const row = `<tr>
+                            <td>${index + 1}</td>
+                            <td>${user.username}</td>
+                            <td>${user.clicks}</td>
+                        </tr>`;
+                        tbody.innerHTML += row;
+                    });
+                });
+        }
+        
+        setInterval(updateRankings, 2000);
+        window.onload = updateRankings;
+    </script>
+{% endblock %}
